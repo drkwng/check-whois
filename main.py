@@ -11,7 +11,7 @@ from time import sleep
 from pprint import pprint
 
 from parse import GetWhois
-from process import get_full_regex, scrape_whois
+from process import get_regex, scrape_whois
 
 
 def write_data(domain, data, mode, res_file='whois_result.csv'):
@@ -30,8 +30,8 @@ def write_data(domain, data, mode, res_file='whois_result.csv'):
             writer.writerow(header)
 
         row = [
-            domain, data['status'][0].strip('\r'), data['creation_date'],
-            data['expiration_date'][0].strip('\r'), data['updated_date'],
+            domain, data['status'], data['creation_date'],
+            data['expiration_date'], data['updated_date'],
             data['name_servers']
         ]
         writer.writerow(row)
@@ -48,15 +48,19 @@ def worker(file):
         get_whois = GetWhois()
 
         for num, i in enumerate(_domains):
-            data = get_whois.worker(i)
+            try:
+                data = get_whois.worker(i)
 
-            regex = get_full_regex(i)
-            whois_data = scrape_whois(data, regex)
-            write_data(i, whois_data, 'w' if num == 0 else 'a')
+                regex = get_regex(i)
+                whois_data = scrape_whois(data, regex)
+                write_data(i, whois_data, 'w' if num == 0 else 'a')
 
-            pprint([i, whois_data])
-            print('\n==================\n')
-            sleep(2)
+                pprint([i, whois_data])
+                print('\n==================\n')
+                sleep(2)
+
+            except Exception as e:
+                print(i, e)
 
 
 if __name__ == '__main__':

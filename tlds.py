@@ -1,9 +1,8 @@
-# RegEx taken from @DanyCork (python-whois)
+# Some RegExs taken from @DanyCork (python-whois)
 # https://github.com/DannyCork/python-whois
-# TLDs Scrape Whois Data RegExps
+# Scrape Whois Data RegExp For TLDs
 
 
-# COM, NAME, NET, PRO, WEBSITE TLDs
 base = {
     'parent': None,
 
@@ -20,6 +19,43 @@ base = {
     'emails': r'[\w.-]+@[\w.-]+\.[\w]{2,4}',
 }
 
+com = co = edu = net = io = info = biz = org = name = pro = website = club = travel = base
+
+mobi = {
+    'parent': 'base',
+
+    'expiration_date': r'\nRegistry Expiry Date:\s?(.+)',
+    'updated_date': r'\nUpdated Date:\s?(.+)',
+}
+
+online = {
+    'parent': 'base',
+
+    'registrar': r'Registrar:\s*(.+)',
+
+    'creation_date': r'Creation Date:\s?(.+)',
+    'expiration_date': r'Registry Expiry Date:\s?(.+)',
+    'updated_date': r'Updated Date:\s?(.+)',
+
+    'status': r'Status:\s?(.+)',
+}
+
+cc = {
+    'parent': 'base',
+
+    'registrar': r'Registrar:\s*(.+)',
+
+    'creation_date': r'created:\s+(\S+)',
+    # 'expiration_date': r'Registry Expiry Date:\s?(.+)',
+    'updated_date': r'changed:\s+(\S+)',
+
+    'name_servers': r'nserver:\s*(.+)\s*',
+    'status': r'status:\s+(.+)',
+}
+
+################
+# RU / UA / KZ
+################
 ua = {
     'parent': 'base',
 
@@ -44,53 +80,66 @@ ru = {
     'status': r'\nstate:\s*(.+)',
 }
 
+su = {
+    'parent': 'ru',
+}
+
 ru_rf = {
-    'parent': 'base',
-
-    'creation_date': r'\ncreated:\s*(.+)',
-    'expiration_date': r'\npaid-till:\s*(.+)',
-
-    'name_servers': r'\nnserver:\s*(.+)',
-    'status': r'\nstate:\s*(.+)',
+    'parent': 'ru',
 }
 
-mobi = {
-    'parent': 'base',
+kz = {
+    'parent': None,
 
-    'expiration_date': r'\nRegistry Expiry Date:\s?(.+)',
-    'updated_date': r'\nUpdated Date:\s?(.+)',
+    'registrar': r'Current Registar:\s?(.+)',
+    'registrant': r'Organization Name\.+:\s?(.+)',
+    'registrant_country': r'Country\.+:\s?(.+)',
+
+    'creation_date': r'Domain created:\s?(.+)',
+    'updated_date': r'Last modified :\s?(.+)',
+
+    'name_servers': r'\s* server\.+:\s*(.+)\s*',
+    'status': r'Domain status :\s?(.+)',
+    'emails': r'[\w.-]+@[\w.-]+\.[\w]{2,4}',
 }
 
-online = {
+################
+# USA / Canada
+################
+
+us = {
     'parent': 'base',
-
-    'registrar': r'Registrar:\s*(.+)',
-
-    'creation_date': r'Creation Date:\s?(.+)',
-    'expiration_date': r'Registry Expiry Date:\s?(.+)',
-    'updated_date': r'Updated Date:\s?(.+)',
-
-    'status': r'Status:\s?(.+)',
+    'registrant': r'Registrant Name:\s?(.+)',
+    'status': r'DNSSEC:\s?(.+)'
 }
 
-org = {
+ca = {
+    'parent': 'base',
+}
+
+################
+# EUROPE
+################
+eu = {
     'parent': 'base',
 
-    'expiration_date': r'\nRegistry Expiry Date:\s?(.+)',
-    'updated_date': r'\nLast Updated On:\s?(.+)',
+    'registrant': r'Registrant:\n\s*(.+)',
+    'registrar': r'Registrar:\n\s*Name: (.+)',
 
-    'name_servers': r'Name Server:\s?(.+)\s*',
+    # Bad RegEx - only 2 NS (correct it if you can)
+    'name_servers': r'Name servers:\n(?:\s+(\S+)\n)(?:\s+(\S+)\n)'
 }
 
 uk = {
     'parent': 'base',
 
+    # No effect
     'registrant': r'Registrant:\n\s*(.+)',
 
     'creation_date': r'Registered on:\s*(.+)',
     'expiration_date': r'Expiry date:\s*(.+)',
-    'updated_date': r'Last updated:\s*(.+)',
+    'updated_date': r'Last updated:\s*(.+)\r',
 
-    'name_servers': r'Name Servers:\s*(.+)\s*',
+    # No effect
     'status': r'Registration status:\n\s*(.+)',
 }

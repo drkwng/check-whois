@@ -2,6 +2,7 @@
 # https://t.me/drkwng
 # Whois Data Parser
 
+from pprint import pprint
 
 import re
 
@@ -11,7 +12,8 @@ from urllib.parse import urlparse
 
 class GetWhois:
     def __init__(self):
-        self.inter_zones = ['com', 'net', 'edu']
+        self.verisign = ['com', 'net', 'edu', ]
+        self.iana = ['cc', ]
 
     @classmethod
     def get_domain(cls, url):
@@ -75,8 +77,12 @@ class GetWhois:
         :return: str
         """
         domain = self.get_domain(url)
-        if domain.split('.')[-1] in self.inter_zones:
+
+        if domain.split('.')[-1] in self.verisign:
             service = 'whois.verisign-grs.com'
+            whois_data = self.get_whois(domain, service).decode()
+        elif domain.split('.')[-1] in self.iana:
+            service = 'whois.iana.org'
             whois_data = self.get_whois(domain, service).decode()
         else:
             whois_service = self.get_whois(domain, 'whois.iana.org')
